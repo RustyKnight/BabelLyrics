@@ -8,11 +8,13 @@
 import Foundation
 import BabelLyricsLib
 
+/// Command that segments the extracted vocals track by silence.
 struct SegmentAudio {
     
     let babel: Babel
     let sourceAudio: URL
     
+    /// Runs the vocal segmentation workflow.
     func execute() {
         let currentDirectory = babel.currentDirectory
         let targetDirectory = Paths.audioSegments.appending(to: currentDirectory)
@@ -83,6 +85,7 @@ fileprivate struct LoggerCallback: LogDelegate {
 
 extension SegmentAudio {
     
+    /// Locates `Audio/vocals.wav` and runs segmentation.
     static func segmentAudio(babel: Babel) {
         let fileManager = babel.fileManager
         let currentDirectory = babel.currentDirectory

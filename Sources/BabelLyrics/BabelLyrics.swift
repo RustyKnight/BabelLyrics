@@ -4,8 +4,10 @@
 import Rainbow
 import Foundation
 
+/// Entry point for the BabelLyrics command-line interface.
 @main
 struct BabelLyrics {
+    /// Parses command-line arguments and dispatches requested workflows.
     static func main() {
         let arguments = CommandLine.arguments.dropFirst()
 

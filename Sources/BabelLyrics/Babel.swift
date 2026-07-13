@@ -7,13 +7,18 @@
 
 import Foundation
 
+/// Shared runtime context for the BabelLyrics CLI.
 struct Babel {
+    /// Filesystem helper used by commands and support utilities.
     let fileManager: FileManager
+
+    /// The process working directory as a file URL.
     var currentDirectory: URL {
         fileManager.currentDirectory
     }
 }
 
 extension Babel {
+    /// Enables verbose debug logging for CLI workflows.
     nonisolated(unsafe) static var isDebug = true
 }

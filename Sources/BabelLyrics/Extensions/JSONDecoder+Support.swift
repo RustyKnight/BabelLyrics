@@ -9,6 +9,7 @@ import Foundation
 
 extension JSONDecoder {
     
+    /// Loads and decodes a value from a JSON file.
     static func load<T>(_ type: T.Type, from url: URL) throws -> T where T : Decodable {
         let data = try Data(contentsOf: url)
         return try JSONDecoder.init().decode(type, from: data)

@@ -9,11 +9,13 @@ import Foundation
 import BabelLyricsLib
 import Rainbow
 
+/// Command that separates a single MP3 into vocals and music tracks.
 struct SeparateAudio {
     
     let babel: Babel
     let sourceAudio: URL
     
+    /// Runs the audio separation workflow.
     func execute() {
         do {
             print(info: "Starting audio separation (this will take a while)")
@@ -91,6 +93,7 @@ fileprivate struct LoggerCallback: LogDelegate {
 
 extension SeparateAudio {
     
+    /// Finds the source MP3 in the current directory and runs separation.
     static func splitAudio(babel: Babel) {
         do {
             let fileManager = babel.fileManager

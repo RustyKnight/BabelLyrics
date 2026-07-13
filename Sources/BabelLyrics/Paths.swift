@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Well-known project directories and metadata file locations.
 enum Paths {
     case audio
     case video
@@ -22,6 +23,7 @@ enum Paths {
 
 extension Paths {
     
+    /// Returns the relative path for the path case.
     var path: String {
         switch self {
         case .audio: "Audio"
@@ -41,6 +43,7 @@ extension Paths {
 
 extension Paths {
     
+    /// Appends the relative path to a base URL.
     func appending(to url: URL) -> URL {
         url.appendingPathComponent(self.path)
     }

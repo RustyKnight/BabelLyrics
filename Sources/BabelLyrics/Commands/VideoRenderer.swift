@@ -8,13 +8,14 @@
 import Foundation
 import BabelLyricsLib
 
+/// Command that renders a lyrics video from transcription metadata.
 struct VideoRenderer {
     
     let babel: Babel
     let model: AudioTranscriberModel
     
+    /// Runs the video rendering workflow.
     func execute() {
-        let fileManager = babel.fileManager
         let currentDirectory = babel.currentDirectory
         
         let destination = Paths.video.appending(to: currentDirectory)
@@ -45,6 +46,7 @@ private struct LoggerCallback: LogDelegate {
 }
 extension VideoRenderer {
     
+    /// Loads transcription metadata and renders the final video.
     static func render(babel: Babel) {
         let fileManager = babel.fileManager
         let currentDirectory = babel.currentDirectory

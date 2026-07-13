@@ -8,6 +8,7 @@
 import Foundation
 
 extension JSONEncoder {
+    /// Encodes a value as pretty-printed JSON and writes it to disk.
     static func save<T>(_ value: T, to url: URL) throws where T : Encodable {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted

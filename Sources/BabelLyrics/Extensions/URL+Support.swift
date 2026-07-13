@@ -9,6 +9,7 @@ import Foundation
 
 extension URL {
     
+    /// Returns the path with the supplied base path removed from the front.
     func pathDroppingPrefix(of url: URL) -> String {
         path()
             .replacingOccurrences(

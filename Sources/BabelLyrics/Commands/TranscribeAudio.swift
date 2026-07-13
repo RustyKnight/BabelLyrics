@@ -8,11 +8,13 @@
 import Foundation
 import BabelLyricsLib
 
+/// Command that transcribes segmented vocal audio into lyric text.
 struct TranscribeAudio {
     
     let babel: Babel
     let metaData: AudioSegmenterModel
     
+    /// Runs the transcription workflow and persists the result.
     func execute() {
         let currentDirectory = babel.currentDirectory
         let destinationPath = Paths.transcribedAudio.appending(to: currentDirectory)
@@ -63,6 +65,7 @@ private struct LoggerCallback: LogDelegate {
 
 extension TranscribeAudio {
     
+    /// Loads segmentation metadata and runs transcription.
     static func transcribe(babel: Babel) {
         let fileManager = babel.fileManager
         let currentDirectory = babel.currentDirectory
