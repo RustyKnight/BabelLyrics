@@ -11,6 +11,7 @@ import Rainbow
 
 struct SeparateAudio {
     
+    let babel: Babel
     let sourceAudio: URL
     
     func execute() {
@@ -31,14 +32,14 @@ struct SeparateAudio {
             
             stopWatch.stop()
             
-            let sourcePath = sourceAudio.deletingLastPathComponent()
+            let currentDirectory = babel.currentDirectory
             
             let musicPath = separatorResult
                 .musicURL
-                .pathDroppingPrefix(of: sourcePath)
+                .pathDroppingPrefix(of: currentDirectory)
             let vocalsPath = separatorResult
                 .vocalsURL
-                .pathDroppingPrefix(of: sourcePath)
+                .pathDroppingPrefix(of: currentDirectory)
 
             print("")
             print(info: "Took \(stopWatch.formattedUnitsStyle()) to separate audio tracks")
@@ -74,7 +75,7 @@ struct SeparateAudio {
     }
     
     private func targetDirectory(for source: URL) -> URL {
-        BabelLyrics.Path.audio.appending(to: source.deletingLastPathComponent())
+        Paths.audio.appending(to: source.deletingLastPathComponent())
 //        source
 //            .deletingLastPathComponent()
 //            .appendingPathComponent(Self.audioDirectoryName)
@@ -83,16 +84,17 @@ struct SeparateAudio {
 
 fileprivate struct LoggerCallback: LogDelegate {
     func log(_ message: LogMessage) {
+        guard Babel.isDebug else { return }
         print(debug: message.message)
     }
 }
 
 extension SeparateAudio {
     
-    static func splitAudio() {
+    static func splitAudio(babel: Babel) {
         do {
-            let fileManager = FileManager.default
-            let currentDirectory = fileManager.currentDirectory
+            let fileManager = babel.fileManager
+            let currentDirectory = babel.currentDirectory
             
             let matches = try fileManager.files(
                 withExtension: "mp3",
@@ -109,7 +111,10 @@ extension SeparateAudio {
             
             print(info: "Splitting vocal and music tracks for \"\(sourceAudio.lastPathComponent)\"")
             
-            let command = SeparateAudio(sourceAudio: sourceAudio)
+            let command = SeparateAudio(
+                babel: babel,
+                sourceAudio: sourceAudio
+            )
             command.execute()
         } catch {
             print(error: "Unable to search current directory for MP3 audio files")

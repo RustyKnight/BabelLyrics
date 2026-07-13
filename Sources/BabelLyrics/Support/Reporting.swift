@@ -18,5 +18,7 @@ func print(info: String) {
 }
 
 func print(debug: String) {
-    print("🟤 " + debug.lightBlack)
+    if Babel.isDebug {
+        print("🟤 " + debug.lightBlack)
+    }
 }

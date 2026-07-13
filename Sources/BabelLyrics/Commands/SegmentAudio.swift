@@ -10,29 +10,31 @@ import BabelLyricsLib
 
 struct SegmentAudio {
     
+    let babel: Babel
     let sourceAudio: URL
     
     func execute() {
-        let fileManager = FileManager.default
-        let currentDirectory = fileManager.currentDirectory
-        let targetDirectory = BabelLyrics.Path.audioSegments.appending(to: currentDirectory)
+        let currentDirectory = babel.currentDirectory
+        let targetDirectory = Paths.audioSegments.appending(to: currentDirectory)
         
         do {
             let segmenter = AudioSegmenter(logger: LoggerCallback())
             let stopWatch = StopWatch().start()
             let results = try segmenter.segmentAudio(
                 at: sourceAudio,
-                outputDirectory: targetDirectory,
-                configuration: .init(
-                    silenceThresholdDecibels: -20,
-                    minimumSegmentDurationSeconds: 0.7
-                )
+                outputDirectory: targetDirectory
+//                ,
+//                configuration: .init(
+//                    silenceThresholdDecibels: -20,
+//                    minimumSegmentDurationSeconds: 0.7
+//                )
             )
             print("")
             print(info: "Took \(stopWatch.formattedUnitsStyle()) to segment vocals audio")
             print(info: "Generated \(results.segments.count) segments")
             
-            let segmentFile = Self.appendingSegmentsFile(to: currentDirectory)
+//            let segmentFile = Self.appendingSegmentsFile(to: currentDirectory)
+            let segmentFile = Paths.vocalSegmentsMetaData.appending(to: currentDirectory)
             let segmentPath = segmentFile.pathDroppingPrefix(of: currentDirectory)
             print(debug: "Saving segments meta data to \(segmentPath)")
             
@@ -60,30 +62,32 @@ struct SegmentAudio {
 
 fileprivate struct LoggerCallback: LogDelegate {
     func log(_ message: LogMessage) {
+        guard Babel.isDebug else { return }
+        // May want to pick up on the segment progress...
         print(debug: message.message)
     }
 }
+//
+//extension SegmentAudio {
+//    
+//    static let segmentsFileName = "VocalSegments.json"
+//    
+//    static func appendingSegmentsFile(to url: URL) -> URL {
+//        BabelLyrics
+//            .Path
+//            .support
+//            .appending(to: url)
+//            .appendingPathComponent(Self.segmentsFileName)
+//    }
+//}
 
 extension SegmentAudio {
     
-    static let segmentsFileName = "VocalSegments.json"
-    
-    static func appendingSegmentsFile(to url: URL) -> URL {
-        BabelLyrics
-            .Path
-            .support
-            .appending(to: url)
-            .appendingPathComponent(Self.segmentsFileName)
-    }
-}
-
-extension SegmentAudio {
-    
-    static func segmentAudio() {
-        let fileManager = FileManager.default
-        let currentDirectory = fileManager.currentDirectory
+    static func segmentAudio(babel: Babel) {
+        let fileManager = babel.fileManager
+        let currentDirectory = babel.currentDirectory
         
-        let audioPath = BabelLyrics.Path.audio.appending(to: currentDirectory)
+        let audioPath = Paths.audio.appending(to: currentDirectory)
         guard fileManager.directoryExists(at: audioPath) else {
             print(error: "Missing Audio directory")
             print(error: "Ensure source audio has been split first")
@@ -99,7 +103,10 @@ extension SegmentAudio {
         
         print(info: "Segmenting vocals audio")
         
-        let command = SegmentAudio(sourceAudio: vocalAudio)
+        let command = SegmentAudio(
+            babel: babel,
+            sourceAudio: vocalAudio
+        )
         command.execute()
     }
     

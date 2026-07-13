@@ -1,0 +1,89 @@
+//
+//  TranscribeAudio.swift
+//  BabelLyrics
+//
+//  Created by Shane Whitehead on 14/7/2026.
+//
+
+import Foundation
+import BabelLyricsLib
+
+struct TranscribeAudio {
+    
+    let babel: Babel
+    let metaData: AudioSegmenterModel
+    
+    func execute() {
+        let currentDirectory = babel.currentDirectory
+        let destinationPath = Paths.transcribedAudio.appending(to: currentDirectory)
+        let audioSegmentsPath = Paths.audioSegments.appending(to: currentDirectory)
+
+        print(info: "Starting audio transcription")
+        
+        do {
+            let stopWatch = StopWatch().start()
+            let transcriber = AudioTranscriber(logger: LoggerCallback())
+            let transcribedModel = try transcriber.transcribeAudio(
+                from: metaData,
+                audioSegmentSourceURL: audioSegmentsPath,
+                temporaryDirectory: destinationPath,
+                configuration: .init(
+                    //                beamSize: 5,
+                    threads: 8
+                )
+            )
+            
+            let segmentCount = metaData.segments.count
+            print(info: "Took \(stopWatch.formattedUnitsStyle()) to transcribe \(segmentCount) audio segments")
+            let lyrics = transcribedModel.plainLines.joined(separator: "\n")
+            print("")
+            print(lyrics)
+            print("")
+            
+            let transcriptFile = Paths.vocalAudioTranscriptMetaData.appending(to: currentDirectory)
+            let transcriptPath = transcriptFile.pathDroppingPrefix(of: currentDirectory)
+            print(debug: "Saving transcript to \(transcriptPath)")
+            
+            try JSONEncoder.save(
+                transcribedModel,
+                to: transcriptFile
+            )
+        } catch {
+            
+        }
+    }
+}
+
+private struct LoggerCallback: LogDelegate {
+    func log(_ message: BabelLyricsLib.LogMessage) {
+        guard Babel.isDebug else { return }
+        print(debug: message.message)
+    }
+}
+
+extension TranscribeAudio {
+    
+    static func transcribe(babel: Babel) {
+        let fileManager = babel.fileManager
+        let currentDirectory = babel.currentDirectory
+        let metaDataFile = Paths.vocalSegmentsMetaData.appending(to: currentDirectory)
+        
+        guard fileManager.fileExists(at: metaDataFile) else {
+            print(error: "Vocal audio must have been segment first!")
+            return
+        }
+        
+        do {
+            print(info: "Loading audio segments meta data")
+            let metaData = try JSONDecoder.load(AudioSegmenterModel.self, from: metaDataFile)
+            let transcribe = TranscribeAudio(
+                babel: babel,
+                metaData: metaData
+            )
+            transcribe.execute()
+        } catch {
+            print(error: "Unable to load audio segments meta data")
+            print(error.localizedDescription)
+        }
+    }
+}
