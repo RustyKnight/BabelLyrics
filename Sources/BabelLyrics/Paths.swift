@@ -9,6 +9,7 @@ import Foundation
 
 enum Paths {
     case audio
+    case video
     case support
     case audioSegments
     case transcribedAudio
@@ -24,6 +25,7 @@ extension Paths {
     var path: String {
         switch self {
         case .audio: "Audio"
+        case .video: "Video"
         case .support: "Support"
         case .audioSegments:
             "\(Paths.support.path)/Segments"

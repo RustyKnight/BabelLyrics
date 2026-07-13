@@ -20,16 +20,32 @@ struct BabelLyrics {
         
         let commands = arguments.map { $0.lowercased() }
         
+        let recognizedCommands = [
+            "--split",
+            "--segment",
+            "--transcribe",
+            "--render"
+        ]
+        
+        let commandSet = Set(commands)
+        guard recognizedCommands.contains(where: commandSet.contains) else {
+            print("It's official, I have no idea what you're talking about".lightYellow)
+            return
+        }
+        
         let babel = Babel(fileManager: FileManager.default)
         
         if commands.contains("--split") {
             SeparateAudio.splitAudio(babel: babel)
-        } else if commands.contains("--segment") {
+        }
+        if commands.contains("--segment") {
             SegmentAudio.segmentAudio(babel: babel)
-        } else if commands.contains("--transcribe") {
+        }
+        if commands.contains("--transcribe") {
             TranscribeAudio.transcribe(babel: babel)
-        } else {
-            print(error: "It's offical, I have no idea what you're talking about.")
+        }
+        if commands.contains("--render") {
+            VideoRenderer.render(babel: babel)
         }
 
         print("")
