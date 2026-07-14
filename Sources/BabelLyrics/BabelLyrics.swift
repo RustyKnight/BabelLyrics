@@ -32,6 +32,16 @@ struct BabelLyrics {
         let commandSet = Set(commands)
         guard recognizedCommands.contains(where: commandSet.contains) else {
             print("It's official, I have no idea what you're talking about".lightYellow)
+            
+            print("")
+            print("--split".lightWhite + " splits a MP3 audio file, separating the vocal and music tracks".white)
+            print("  - The file must exist in the current directory".white)
+            print("  - Only supports a single MP3".white)
+            print("  - The separated tracks are stored in the \"Audio\" directory".white)
+            print("--segment".lightWhite + " segments the vocal audio".white)
+            print("  - Isolates the audio components from the surrounding silence in the vocal audio track".white)
+            print("--transcribe".lightWhite + " transcribes the audio segments to text".white)
+            print("--render".lightWhite + " renders the transcript into a \"karaoke\" like, transparent video".white)
             return
         }
         
