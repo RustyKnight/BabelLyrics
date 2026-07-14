@@ -20,6 +20,22 @@ It depends on [`BabelLyricsLib`](https://github.com/RustyKnight/BabelLyricsLib) 
 
 The library dependency is resolved from GitHub by Swift Package Manager.
 
+## Project driven
+
+The intention of the CLI is to drive a project based around a single MP3.
+
+Output of the various phases are stored relative to source MP3 and each phase relies on the output from previous phase in order to perform its operations.
+
+Because the workflow is heavily AI depended, the output should always be reviewed.
+
+The commands should be run in order of:
+* Split
+* Segment
+* Transcribe
+* Render
+
+Because each phase persists it's output, subsequent phases can be rerun without the need to run previous phases.  This allows you to make modifications to the output from a previous phases and run subsequent phases and update their outputs.
+
 ## Build
 
 ```bash
@@ -34,7 +50,7 @@ swift test
 
 ## CLI commands
 
-Run the executable from a directory containing your source audio files.
+Run the executable from a directory containing your source audio file.
 
 Supported flags:
 
