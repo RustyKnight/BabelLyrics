@@ -2,7 +2,7 @@
 
 `BabelLyrics` is a macOS Swift CLI for turning a source MP3 into separated vocal/music tracks, lyric transcriptions, and a final lyrics video.
 
-It wraps the local `BabelLyricsLib-2.0` package and uses:
+It depends on [`BabelLyricsLib`](https://github.com/RustyKnight/BabelLyricsLib) (`main` branch) and uses:
 
 - `Demucs` for source separation
 - `FFmpeg` for audio segmentation
@@ -18,11 +18,7 @@ It wraps the local `BabelLyricsLib-2.0` package and uses:
 - `demucs`
 - `whisper`
 
-The project expects the local library dependency to live next to this repo at:
-
-```text
-../BabelLyricsLib-2.0
-```
+The library dependency is resolved from GitHub by Swift Package Manager.
 
 ## Build
 
