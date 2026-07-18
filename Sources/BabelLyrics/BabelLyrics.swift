@@ -11,13 +11,6 @@ struct BabelLyrics {
     static func main() {
         let arguments = CommandLine.arguments.dropFirst()
 
-        guard arguments.isEmpty == false else {
-            print("")
-            print(error: "No commands provide")
-            print("")
-            return
-        }
-
         print("")
         
         let commands = arguments.map { $0.lowercased() }
@@ -30,7 +23,7 @@ struct BabelLyrics {
         ]
         
         let commandSet = Set(commands)
-        guard recognizedCommands.contains(where: commandSet.contains) else {
+        guard arguments.isEmpty == false && recognizedCommands.contains(where: commandSet.contains) else {
             print("It's official, I have no idea what you're talking about".lightYellow)
             
             print("")
