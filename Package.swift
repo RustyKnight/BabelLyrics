@@ -15,7 +15,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/RustyKnight/BabelLyricsLib", branch: "main"),
+        .package(path: "../BabelLyricsLib-2.0"),
         .package(url: "https://github.com/onevcat/Rainbow", from: "4.1.0"),
     ],
     targets: [
@@ -24,7 +24,7 @@ let package = Package(
         .executableTarget(
             name: "BabelLyrics",
             dependencies: [
-                .product(name: "BabelLyricsLib", package: "BabelLyricsLib"),
+                .product(name: "BabelLyricsLib", package: "BabelLyricsLib-2.0"),
                 .product(name: "Rainbow", package: "Rainbow"),
             ]
         ),
@@ -32,7 +32,7 @@ let package = Package(
             name: "BabelLyricsTests",
             dependencies: [
                 "BabelLyrics",
-                .product(name: "BabelLyricsLib", package: "BabelLyricsLib"),
+                .product(name: "BabelLyricsLib", package: "BabelLyricsLib-2.0"),
                 .product(name: "Rainbow", package: "Rainbow"),
             ]
         ),
