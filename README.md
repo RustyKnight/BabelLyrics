@@ -77,6 +77,7 @@ The CLI runs the requested workflows in this order:
 The CLI writes its files relative to the current working directory:
 
 - `Audio/vocals.wav`
+- `Audio/vocals-mono.wav`
 - `Audio/music.wav`
 - `Support/Segments/`
 - `Support/VocalSegments.json`
@@ -104,7 +105,7 @@ After splitting:
 BabelLyrics --segment
 ```
 
-This reads `Audio/vocals.wav` and writes segment files under `Support/Segments/`.
+This reads `Audio/vocals-mono.wav` and writes segment files under `Support/Segments/`.
 
 ### 3. Transcribe the segments
 

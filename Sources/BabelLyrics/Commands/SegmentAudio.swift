@@ -87,7 +87,7 @@ fileprivate struct LoggerCallback: LogDelegate {
 
 extension SegmentAudio {
     
-    /// Locates `Audio/vocals.wav` and runs segmentation.
+    /// Locates `Audio/vocals-mono.wav` and runs segmentation.
     static func segmentAudio(babel: Babel) {
         let fileManager = babel.fileManager
         let currentDirectory = babel.currentDirectory
@@ -99,7 +99,10 @@ extension SegmentAudio {
             return
         }
         
-        let vocalAudio = audioPath.appendingPathComponent("vocals-mono.wav")
+        
+        
+//        let vocalAudio = audioPath.appendingPathComponent("vocals-mono.wav")
+        let vocalAudio = AudioSeparator.Files.vocalsMono.url(in: audioPath)
         guard fileManager.fileExists(at: vocalAudio) else {
             print(error: "Missing Audio/vocals-mono.wav")
             print(error: "Ensure source audio has been split first")
