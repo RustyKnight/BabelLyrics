@@ -33,6 +33,12 @@ struct TranscribeAudio {
                     threads: 8
                 )
             ) { progress in
+                guard progress.message?.contains("Completed Whisper transcription") == false else {
+                    print("")
+                    return
+                }
+                
+                
                 let totalProgress = progress.fractionCompleted.formatted(.percent.precision(.fractionLength(1)))
                 let passProgress = progress.currentSegmentFraction.formatted(.percent.precision(.fractionLength(1)))
                 let passCompleted = "\(progress.currentSegmentIndex)-\(progress.totalSegments)"
@@ -73,10 +79,12 @@ private struct LoggerCallback: LogDelegate {
         
         switch message.level {
         case .debug:
-            guard Babel.isDebug else { return }
-            print(debug: message.message)
+//            guard Babel.isDebug else { return }
+//            print(debug: message.message)
+            break
         case .info:
-            print(info: message.message)
+//            print(info: message.message)
+            break
         case .warning:
             print(warning: message.message)
         case .error:
