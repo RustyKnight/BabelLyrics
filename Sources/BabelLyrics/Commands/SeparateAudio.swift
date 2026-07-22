@@ -24,13 +24,32 @@ struct SeparateAudio {
             let separatorResult = try separator.separateAudio(
                 at: sourceAudio,
                 configuration: .init(
-                    model: .htdemucsFT,
+//                    model: .htdemucsFT,
                     //overlap: 0.5,
                     //shifts: 5,
                     jobs: 4,
                 ),
                 destinationDirectory: targetDirectory(for: sourceAudio)
-            )
+            ) { progress in
+                guard progress.currentPassFraction > 0 || progress.fractionCompleted > 0 else { return }
+                
+                let totalProgress = progress.fractionCompleted.formatted(.percent.precision(.fractionLength(1)))
+                let passProgress = progress.currentPassFraction.formatted(.percent.precision(.fractionLength(1)))
+                let passCompleted = "\(progress.completedPasses + 1)-\(progress.totalPasses)"
+                let eta = progress.estimatedTimeRemaining?.formatted(
+                    .units(
+                        allowed: [.minutes, .seconds],
+                        width: .narrow
+                    )
+                ) ?? "--"
+                
+                print("\u{001B}[2K\r🟢 Pass [\(passCompleted) @ \(passProgress)] Overall: \(totalProgress) [\(eta)]", terminator: "")
+                fflush(stdout) // force immediate terminal update
+                
+                if progress.completedPasses == progress.totalPasses {
+                    print("")
+                }
+            }
             
             stopWatch.stop()
             
@@ -67,6 +86,9 @@ struct SeparateAudio {
                 print(error: "Failed to remove temporary directory")
             case .invalidDemucsConfiguration(let string):
                 print(error: "Invalid Demucs configuration".yellow)
+                print(string)
+            case .ffmpegCommandFailed(let string):
+                print(error: "FFMPEG execution failed".yellow)
                 print(string)
             }
         } catch {

@@ -30,11 +30,23 @@ struct TranscribeAudio {
                 audioSegmentSourceURL: audioSegmentsPath,
                 temporaryDirectory: destinationPath,
                 configuration: .init(
-                    //                beamSize: 5,
                     threads: 8
                 )
-            )
-            
+            ) { progress in
+                let totalProgress = progress.fractionCompleted.formatted(.percent.precision(.fractionLength(1)))
+                let passProgress = progress.currentSegmentFraction.formatted(.percent.precision(.fractionLength(1)))
+                let passCompleted = "\(progress.currentSegmentIndex)-\(progress.totalSegments)"
+                let eta = progress.estimatedTimeRemaining?.formatted(
+                    .units(
+                        allowed: [.minutes, .seconds],
+                        width: .narrow
+                    )
+                ) ?? "--"
+                
+                print("\u{001B}[2K\r🟢 Segment [\(passCompleted) @ \(passProgress)] Overall: \(totalProgress) [\(eta)]", terminator: "")
+                fflush(stdout) // force immediate terminal update
+            }
+
             let segmentCount = metaData.segments.count
             print(info: "Took \(stopWatch.formattedUnitsStyle()) to transcribe \(segmentCount) audio segments")
             let lyrics = transcribedModel.plainLines.joined(separator: "\n")
@@ -58,8 +70,18 @@ struct TranscribeAudio {
 
 private struct LoggerCallback: LogDelegate {
     func log(_ message: BabelLyricsLib.LogMessage) {
-        guard Babel.isDebug else { return }
-        print(debug: message.message)
+        
+        switch message.level {
+        case .debug:
+            guard Babel.isDebug else { return }
+            print(debug: message.message)
+        case .info:
+            print(info: message.message)
+        case .warning:
+            print(warning: message.message)
+        case .error:
+            print(error: message.message)
+        }
     }
 }
 

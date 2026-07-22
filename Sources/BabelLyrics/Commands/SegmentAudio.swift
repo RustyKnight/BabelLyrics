@@ -19,6 +19,8 @@ struct SegmentAudio {
         let currentDirectory = babel.currentDirectory
         let targetDirectory = Paths.audioSegments.appending(to: currentDirectory)
         
+        print(debug: "targetDirectory = \(targetDirectory.path())")
+        
         do {
             let segmenter = AudioSegmenter(logger: LoggerCallback())
             let stopWatch = StopWatch().start()
@@ -97,9 +99,9 @@ extension SegmentAudio {
             return
         }
         
-        let vocalAudio = audioPath.appendingPathComponent("vocals.wav")
+        let vocalAudio = audioPath.appendingPathComponent("vocals-mono.wav")
         guard fileManager.fileExists(at: vocalAudio) else {
-            print(error: "Missing Audio/vocals.wav")
+            print(error: "Missing Audio/vocals-mono.wav")
             print(error: "Ensure source audio has been split first")
             return
         }
