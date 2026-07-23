@@ -85,6 +85,130 @@ The CLI writes its files relative to the current working directory:
 - `Support/VocalAudioTranscript.json`
 - `Video/Lyrics.mov`
 
+## Configuration
+
+Configuration is provided by a `BabelConfiguration.json` file within the project directory, this is used to drive each individual phase.  If you just want to configure a single phase, you only need to supply the configuration elements for it.
+
+Some properties are optional, meaning that it will be excluded when executing the underlying command.  Some properties are default optional, meaning, if you don't supply a value for them, they will default to a specific value.
+
+### Audio Separation
+
+See Demucs CLI documentation for more details.
+
+* model: String - Model to be used.
+	* Default: `htdemucs_ft`
+	* Valid options include: `htdemucs`, `htdemucs_ft`, `htdemucs_6s`, `mdx_extra` and `mdx_extra_q`
+* device: String - Determins how the AI is run.  As a general rule, use `cpu` unless you really understand what you're doing.
+	* Default: `cpu`
+	* Valid options include: `cpu`, `mps`, `cuba`
+* segment: Int - Optional whole second segment length.
+	* Default: `7`
+* overlap: Double - Optional overlap ratio.
+	* Default: `0.5`
+* shifts: Int - Optional number of random shifts.  This WILL increase the processing time as each model is executed `shift` times.  So a model which contains only a single model and shift of 2 will run 2 times.  A model with 4 models and shift of 2 will run 8 times.
+* jobs: Int - Optional number of workers
+
+### Audio segmentation
+
+See ffmpeg CLI documenation for more details.
+
+* silenceThresholdDecibels: Double - Silence detection threshold in decibels.
+	* Default: `-35`
+* minimumSilenceDurationSeconds: Double - Minimum silence duration in seconds.
+	* Default: `0.35`
+* minimumSegmentDurationSeconds: Double - Minimum generated segment duration in seconds.
+	* Default: `0.026`
+* segmentPaddingSeconds: Double - Silence padding added to both start and end of each segment.
+	* Default: `0.5`
+
+### Audio Transcriber
+
+See Whisper CLI documentation for more details
+
+* model: String - Whisper model to use
+	* Default: `large-v3`
+	* Valid options: `tiny`, `base`, `small`, `medium`, `large`, `large-v2`, `large-v3`, `large-v3-turbo`, `turbo`
+	* Note: The availability of models will depend on the version of Whisper installed.
+* language: String - Language of the audio.	Generally either the full name or two character coding should be accepted, ie `english` or `en`
+	* Default: English
+* task: String - Defines the output operation to execute.
+	* Default: `transcribe`
+	* Value options: `transcribe`, `translate`
+* beamSize: Int - Beam size used during beam searches.
+	* Default: `5`
+* temperature: Double
+	* Default: `0.0`
+* bestOf: Int - Optional `best_of` candidate count.
+* conditionOnPreviousText: Bool - Whisper context carry-over behavior.
+	* Default: `true`
+* initialPrompt: String - Optional Optional initial prompt for domain-specific vocabulary.
+* threads: Int - Optional thread count for Whisper to use.
+
+### Video Renderer
+
+* resolution: Resolution of video
+	* Default: 1080p
+* framesPerSecond: Double
+	* Default: `25`
+* preRollPaddingSeconds: Double - Pre-roll padding in seconds before a lyric line becomes active.
+	* Default: `1`
+* postRollPaddingSeconds: Double - Post-roll padding in seconds after a lyric line ends.
+	* Default: `1`
+* horizontalPadding: Int - Horizontal subtitle padding in pixels.
+	* Default: `128`
+* bottomPadding: Int - Bottom subtitle padding in pixels.
+	* Default: `96`
+* outputFileExtension: String
+	* Default: `mov`
+
+#### Notes
+
+Resolution is a complex structure.  By default several "default" resolutions are supported automatically:
+
+* hd720
+* hd1080
+* uhd4k
+
+For example:
+
+```
+    "resolution" : {
+      "kind" : "hd1080"
+    },
+```
+
+Resolution also provides several custom options.
+
+##### Custom resolution
+
+```
+"resolution" : {
+  "width" : 100,
+  "height" : 100,
+  "kind" : "custom"
+},
+```
+
+##### Custom height with aspect ratio
+
+```
+"resolution" : {
+  "aspectRatio" : 1.77777778,
+  "kind" : "heightRatio",
+  "height" : 1080
+},
+```
+
+##### Custom width with aspect ratio
+
+```
+"resolution" : {
+  "width" : 1920,
+  "kind" : "widthRatio",
+  "aspectRatio" : 1.77777778
+},
+```
+
 ## Examples
 
 ### 1. Split a single MP3

@@ -23,12 +23,7 @@ struct SeparateAudio {
             let separator = AudioSeparator(logger: LoggerCallback())
             let separatorResult = try separator.separateAudio(
                 at: sourceAudio,
-                configuration: .init(
-//                    model: .htdemucsFT,
-                    //overlap: 0.5,
-                    //shifts: 5,
-                    jobs: 4,
-                ),
+                configuration: babel.configuration.splitter,
                 destinationDirectory: targetDirectory(for: sourceAudio)
             ) { progress in
                 guard progress.currentPassFraction > 0 || progress.fractionCompleted > 0 else { return }

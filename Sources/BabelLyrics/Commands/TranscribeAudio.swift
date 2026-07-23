@@ -29,9 +29,7 @@ struct TranscribeAudio {
                 from: metaData,
                 audioSegmentSourceURL: audioSegmentsPath,
                 temporaryDirectory: destinationPath,
-                configuration: .init(
-                    threads: 8
-                )
+                configuration: babel.configuration.transcriber
             ) { progress in
                 guard progress.message?.contains("Completed Whisper transcription") == false else {
                     print("")

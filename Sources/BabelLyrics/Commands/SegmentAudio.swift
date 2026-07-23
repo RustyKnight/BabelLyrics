@@ -26,12 +26,8 @@ struct SegmentAudio {
             let stopWatch = StopWatch().start()
             let results = try segmenter.segmentAudio(
                 at: sourceAudio,
-                outputDirectory: targetDirectory
-//                ,
-//                configuration: .init(
-//                    silenceThresholdDecibels: -20,
-//                    minimumSegmentDurationSeconds: 0.7
-//                )
+                outputDirectory: targetDirectory,
+                configuration: babel.configuration.segmenter
             )
             print("")
             print(info: "Took \(stopWatch.formattedUnitsStyle()) to segment vocals audio")

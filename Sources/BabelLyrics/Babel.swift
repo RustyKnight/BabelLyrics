@@ -11,6 +11,8 @@ import Foundation
 struct Babel {
     /// Filesystem helper used by commands and support utilities.
     let fileManager: FileManager
+    
+    let configuration: Configuration
 
     /// The process working directory as a file URL.
     var currentDirectory: URL {

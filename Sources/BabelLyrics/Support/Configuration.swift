@@ -7,19 +7,22 @@
 
 import BabelLyricsLib
 
-struct Configuration {
+struct Configuration: Codable, Sendable {
     
     let splitter: AudioSeparator.DemucsConfiguration
-    let segmentation: AudioSegmenterConfiguration
+    let segmenter: AudioSegmenterConfiguration
     let transcriber: AudioTranscriberConfiguration
+    let renderer: VideoRendererConfiguration
     
     init(
         splitter: AudioSeparator.DemucsConfiguration = .init(),
-        segmentation: AudioSegmenterConfiguration = .init(),
-        transcriber: AudioTranscriberConfiguration = .init()
+        segmenter: AudioSegmenterConfiguration = .init(),
+        transcriber: AudioTranscriberConfiguration = .init(),
+        renderer: VideoRendererConfiguration = .init()
     ) {
         self.splitter = splitter
-        self.segmentation = segmentation
+        self.segmenter = segmenter
         self.transcriber = transcriber
+        self.renderer = renderer
     }
 }

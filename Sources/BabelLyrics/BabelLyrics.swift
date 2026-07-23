@@ -15,6 +15,11 @@ struct BabelLyrics {
         
         let commands = arguments.map { $0.lowercased() }
         
+        if commands.contains("--config") {
+            outputConfig()
+            return
+        }
+        
         let recognizedCommands = [
             "--split",
             "--segment",
@@ -38,21 +43,78 @@ struct BabelLyrics {
             return
         }
         
-        let babel = Babel(fileManager: FileManager.default)
+        do {
+            let configuration = try loadConfiguration()
+            
+            let babel = Babel(
+                fileManager: FileManager.default,
+                configuration: configuration
+            )
+            
+            if commands.contains("--split") {
+                SeparateAudio.splitAudio(babel: babel)
+            }
+            if commands.contains("--segment") {
+                SegmentAudio.segmentAudio(babel: babel)
+            }
+            if commands.contains("--transcribe") {
+                TranscribeAudio.transcribe(babel: babel)
+            }
+            if commands.contains("--render") {
+                VideoRenderer.render(babel: babel)
+            }
+        } catch {
+            print(error: "Could not initialise configuration")
+            print(error.localizedDescription)
+        }
         
-        if commands.contains("--split") {
-            SeparateAudio.splitAudio(babel: babel)
-        }
-        if commands.contains("--segment") {
-            SegmentAudio.segmentAudio(babel: babel)
-        }
-        if commands.contains("--transcribe") {
-            TranscribeAudio.transcribe(babel: babel)
-        }
-        if commands.contains("--render") {
-            VideoRenderer.render(babel: babel)
-        }
-
         print("")
+    }
+}
+
+extension BabelLyrics {
+    static func loadConfiguration() throws -> Configuration {
+        let fileManager = FileManager.default
+        let currentDirectory = fileManager.currentDirectory
+        
+        let url = Files.configuration.url(in: currentDirectory)
+        
+        guard fileManager.fileExists(at: url) else {
+            return .init()
+        }
+        
+        print(info: "Loading custom configuration")
+        do {
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            return try decoder.decode(Configuration.self, from: data)
+        }
+    }
+}
+
+extension BabelLyrics {
+    static func outputConfig() {
+        let fileManager = FileManager.default
+        let currentDirectory = fileManager.currentDirectory
+        
+        let config = Configuration(
+            renderer: .init(
+                resolution: .hd1080
+            )
+        )
+        
+        print(info: "Generating sample configuration")
+        
+        do {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted]
+            let data = try encoder.encode(config)
+            
+            let target = Files.configuration.url(in: currentDirectory)
+            try data.write(to: target)
+        } catch {
+            print(error: "Unable to generate configuration example")
+            print(error.localizedDescription)
+        }
     }
 }
