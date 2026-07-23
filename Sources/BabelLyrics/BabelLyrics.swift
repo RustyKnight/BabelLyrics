@@ -87,7 +87,8 @@ extension BabelLyrics {
         do {
             let data = try Data(contentsOf: url)
             let decoder = JSONDecoder()
-            return try decoder.decode(Configuration.self, from: data)
+            let intermediate = try decoder.decode(Configuration.Intermediate.self, from: data)
+            return intermediate.resolve()
         }
     }
 }
@@ -97,10 +98,8 @@ extension BabelLyrics {
         let fileManager = FileManager.default
         let currentDirectory = fileManager.currentDirectory
         
-        let config = Configuration(
-            renderer: .init(
-                resolution: .hd1080
-            )
+        let config = Configuration.Intermediate(
+            configuration: .init()
         )
         
         print(info: "Generating sample configuration")

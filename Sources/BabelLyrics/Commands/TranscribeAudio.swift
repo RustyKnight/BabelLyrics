@@ -77,8 +77,8 @@ private struct LoggerCallback: LogDelegate {
         
         switch message.level {
         case .debug:
-//            guard Babel.isDebug else { return }
-//            print(debug: message.message)
+            guard Babel.isDebug else { return }
+            print(debug: message.message)
             break
         case .info:
 //            print(info: message.message)
