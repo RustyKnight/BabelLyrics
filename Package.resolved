@@ -1,6 +1,15 @@
 {
-  "originHash" : "7b0cb7525d91b894930fa4c5a49cd82594e03da8363e63877f38e3fd667f2c11",
+  "originHash" : "a3cd96c61d16ee1086c6556bf08015cdb623b0249d03a1cb7c6a558efd762e76",
   "pins" : [
+    {
+      "identity" : "babellyricslib",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RustyKnight/BabelLyricsLib",
+      "state" : {
+        "branch" : "main",
+        "revision" : "47af69ec644bfe2374202b624187e5491486a83f"
+      }
+    },
     {
       "identity" : "rainbow",
       "kind" : "remoteSourceControl",
